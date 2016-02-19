@@ -3,9 +3,7 @@
 
 #include "Arduino.h"
 
-
 WritePacket Packet::writePacket;
-
 WritePacket* Packet :: parse(const char *binPacket) {
 
   writePacket.serviceId = binPacket[5]-1;
@@ -29,3 +27,8 @@ WritePacket* Packet :: parse(const char *binPacket) {
 
    return &writePacket;
  }
+
+// ResponsePacket Packet :: responsePacket;
+// ResponsePacket* Packet :: constructResponsePacket(const char *command){
+
+// }

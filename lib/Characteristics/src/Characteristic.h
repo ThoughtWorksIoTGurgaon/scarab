@@ -5,12 +5,12 @@
 #define OFF 0x02
 
 class Characteristic {
-  private:
+  protected:
     int portNumber;
     char *status;
   public:
     Characteristic(int portNumber);
-    void write(int, char *, int (* digitalWriteCallback)(int, int)) ;
+    virtual void write(int, char *, int (* digitalWriteCallback)(int, int))=0 ;
 };
 
 #endif

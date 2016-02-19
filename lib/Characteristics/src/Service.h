@@ -6,7 +6,7 @@
 #include "Packet.h"
 class Service{
   public:
-      virtual Characteristic * construct(int *port)=0;
+      virtual Characteristic ** construct(int *port)=0;
       static void process(WritePacket *pkt);
 };
 

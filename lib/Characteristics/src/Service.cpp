@@ -9,7 +9,7 @@ int digitalWriteCallback(int portNumber, int level){
 }
 
 void Service :: process(WritePacket *pkt){
-      Characteristic* allChars = ServiceFactory::serviceCharMap[pkt->serviceId];
+      Characteristic** allChars = ServiceFactory::serviceCharMap[pkt->serviceId];
 
       int charCount = pkt->charCount;
 
@@ -19,10 +19,10 @@ void Service :: process(WritePacket *pkt){
       for (int i = 0; i < charCount; i++) {
         CharStruct charStruct = pkt->charsStruct[i];
 
-        Characteristic ch = allChars[charStruct.id];
+        Characteristic *ch = allChars[charStruct.id];
 
         Serial.println("for charId:");
         Serial.println(charStruct.id);
-        ch.write(charStruct.dataLen, charStruct.data, &digitalWriteCallback);
+        ch->write(charStruct.dataLen, charStruct.data, &digitalWriteCallback);
       }
 }

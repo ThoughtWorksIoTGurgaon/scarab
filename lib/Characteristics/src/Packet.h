@@ -11,16 +11,18 @@ typedef struct {
     int serviceId;
     int charCount;
     CharStruct *charsStruct;
-  } WritePacket;
+  } WritePacket;//, ResponsePacket;
 
 class Packet {
   private:
     static WritePacket writePacket;
+    // static ResponsePacket responsePacket;
     static const int SIZE_OF_CHAR_STRUCT = sizeof(CharStruct);
 
   public:
     Packet();
     static WritePacket* parse(const char *binPacket) ;
+    // static ResponsePacket* constructReponsePacket();
 };
 
 #endif

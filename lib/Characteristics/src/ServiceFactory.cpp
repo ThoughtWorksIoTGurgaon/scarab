@@ -1,8 +1,8 @@
 #include "ServiceFactory.h"
 
-Characteristic* ServiceFactory::serviceCharMap[4];
+Characteristic** ServiceFactory::serviceCharMap[2];
 
-Service *ServiceFactory::serviceInstanceMap[1] = {new SwitchService()};
+Service *ServiceFactory::serviceInstanceMap[2] = {new DeviceService(), new SwitchService()};
 
 int ServiceFactory::newService(ServiceProfile serviceProfileId, int *ports){
     static int serviceId = 0;

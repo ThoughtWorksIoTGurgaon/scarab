@@ -5,7 +5,7 @@
 class SwitchService : public Service{
 public:
   SwitchService(){}
-  Characteristic * construct(int *port);
+  Characteristic ** construct(int *port);
 };
 
 #endif
