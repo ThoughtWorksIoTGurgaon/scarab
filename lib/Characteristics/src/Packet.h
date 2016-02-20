@@ -1,6 +1,7 @@
 #ifndef PACKET_H
 #define PACKET_H
 
+
 typedef struct {
   int id;
   int dataLen;
@@ -11,18 +12,26 @@ typedef struct {
     int serviceId;
     int charCount;
     CharStruct *charsStruct;
-  } WritePacket;//, ResponsePacket;
+} WritePacket, ResponsePacket;
+
+typedef struct {
+  int serviceId;
+  int charCount;
+  const char *characteristicIds;
+} ReadPacket;
 
 class Packet {
   private:
     static WritePacket writePacket;
-    // static ResponsePacket responsePacket;
+    static ReadPacket readPacket;
     static const int SIZE_OF_CHAR_STRUCT = sizeof(CharStruct);
 
   public:
     Packet();
-    static WritePacket* parse(const char *binPacket) ;
-    // static ResponsePacket* constructReponsePacket();
+    static ResponsePacket responsePacket;
+    static WritePacket* parseWrite(const char *) ;
+    static ReadPacket* parseRead(const char *) ;
+    static char* stringifyResponse(ResponsePacket *);
 };
 
 #endif

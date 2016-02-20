@@ -42,10 +42,32 @@ void libPublishCallback(char *topic, char *data){
 void mqttConnected(void* response)
 {
   softwareSerial.println("Connected");
-  // mqtt.subscribe("/topic/0"); //or mqtt.subscribe("topic"); /*with qos = 0*/
-  // mqtt.subscribe("/topic/1");
-  // mqtt.subscribe("/topic/2");
+
   mqtt.subscribe("/device/my-device-id/cmd");
+
+  char binPkt[] = {
+    0x01, 0x03, 0x01, 0x01, 0x01,
+    0x01,  //serviceId
+    0x01, 0x01 //charCount, charIds
+  };
+
+  ReadPacket* readPacket = Packet::parseRead(binPkt);
+
+  Serial.println("readPacket->serviceId");
+  Serial.println(readPacket->serviceId);
+  Serial.println("readPacket->charCount");
+  Serial.println(readPacket->charCount);
+
+   ResponsePacket *responsePacket = Service::process(readPacket);
+
+  // ResponsePacket *responsePacket = Service::process();
+  // Serial.println("responsePacket->serviceId");
+  // Serial.println(responsePacket->serviceId);
+  // Serial.println("responsePacket->charCount");
+  // Serial.println(responsePacket->charCount);
+  mqtt.publish("/device/my-device-id/data", Packet :: stringifyResponse(responsePacket));
+  // mqtt.publish("/device/my-device-id/data", "asd");
+  // Packet :: stringifyResponse(responsePacket);
 }
 void mqttDisconnected(void* response)
 {
@@ -62,7 +84,7 @@ void mqttData(void* response)
   softwareSerial.print("data=");
   String data = res.popString();
 
-  Service::process(Packet::parse(data.c_str()));
+  Service::process(Packet::parseWrite(data.c_str()));
 
   softwareSerial.println(data);
 }
@@ -104,7 +126,7 @@ void setup() {
 
   pinMode(13, OUTPUT);
 
-
+  ServiceFactory::newService(DVC, 0);
   ServiceFactory::newService(SWH, new int[1]{13});
   // ServiceFactory::newService(SWH, new int[1]{14});
   // ServiceFactory::newService(SWH, new int[1]{15});

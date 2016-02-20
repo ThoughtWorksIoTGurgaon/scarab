@@ -11,6 +11,7 @@ class Characteristic {
   public:
     Characteristic(int portNumber);
     virtual void write(int, char *, int (* digitalWriteCallback)(int, int))=0 ;
+    virtual char* read()=0 ;
 };
 
 #endif

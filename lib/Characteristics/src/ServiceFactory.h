@@ -5,10 +5,6 @@
 #include "SwitchService.h"
 #include "DeviceService.h"
 
-typedef enum {
-  DVC, SWH
-} ServiceProfile;
-
 class ServiceFactory{
   public:
     static Service *(serviceInstanceMap[2]);

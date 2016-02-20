@@ -8,6 +8,6 @@ int ServiceFactory::newService(ServiceProfile serviceProfileId, int *ports){
     static int serviceId = 0;
     Service *service = serviceInstanceMap[serviceProfileId];
     serviceCharMap[serviceId] = service->construct(ports);
-
-    return serviceId;
+    DeviceService :: serviceIdProfileMap[serviceId]={serviceProfileId, serviceId};
+    return serviceId++;
 }
