@@ -60,14 +60,7 @@ void mqttConnected(void* response)
 
    ResponsePacket *responsePacket = Service::process(readPacket);
 
-  // ResponsePacket *responsePacket = Service::process();
-  // Serial.println("responsePacket->serviceId");
-  // Serial.println(responsePacket->serviceId);
-  // Serial.println("responsePacket->charCount");
-  // Serial.println(responsePacket->charCount);
   mqtt.publish("/device/my-device-id/data", Packet :: stringifyResponse(responsePacket));
-  // mqtt.publish("/device/my-device-id/data", "asd");
-  // Packet :: stringifyResponse(responsePacket);
 }
 void mqttDisconnected(void* response)
 {
@@ -77,16 +70,16 @@ void mqttData(void* response)
 {
   RESPONSE res(response);
 
-  softwareSerial.print("Received: topic=");
+  Serial.print("Received: topic=");
   String topic = res.popString();
-  softwareSerial.println(topic);
+  Serial.println(topic);
 
-  softwareSerial.print("data=");
+  Serial.print("data=");
   String data = res.popString();
 
   Service::process(Packet::parseWrite(data.c_str()));
 
-  softwareSerial.println(data);
+  Serial.println(data);
 }
 void mqttPublished(void* response)
 {
@@ -102,7 +95,7 @@ void setup() {
   while(!esp.ready());
 
   softwareSerial.println("ARDUINO: setup mqtt client");
-  if(!mqtt.begin("DVES_duino", "", "", 120, 1)) {
+  if(!mqtt.begin("my-device-id", "", "", 120, 1)) {
     softwareSerial.println("ARDUINO: fail to setup mqtt");
     while(1);
   }
@@ -124,13 +117,11 @@ void setup() {
 
   softwareSerial.println("ARDUINO: system started");
 
-  pinMode(13, OUTPUT);
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
 
   ServiceFactory::newService(DVC, 0);
-  ServiceFactory::newService(SWH, new int[1]{13});
-  // ServiceFactory::newService(SWH, new int[1]{14});
-  // ServiceFactory::newService(SWH, new int[1]{15});
-  // ServiceFactory::newService(SWH, new int[1]{16});
+  ServiceFactory::newService(SWH, new int[1]{12});
 }
 
 int data = 0x01;
@@ -138,22 +129,5 @@ int data = 0x01;
 void loop() {
   esp.process();
   if(wifiConnected) {
-
   }
-
-  // delay(1000);
-  //
-  // data = data == 0x01 ? 0x02 : 0x01;
-  //
-  // char packet[] = {
-  //   0x01, 0x01, 0x01,0x01,0x01,
-  //   0x01,
-  //   0x01,
-  //   0x01, 0x01, data,
-  //   0x00
-  // };
-  //
-  // WritePacket *pkt = Packet::parse(packet);
-  // Serial.println(pkt->serviceId);
-  // Service::process(pkt);
 }
