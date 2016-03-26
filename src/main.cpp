@@ -8,7 +8,7 @@
 #include <SoftwareSerial.h>
 #include "espduino.h"
 #include <mqtt.h>
-#include "ServiceFactory.h"
+#include <ServiceFactory.h>
 
 SoftwareSerial softwareSerial(2, 3); // RX, TX
 ESP esp(&softwareSerial, &Serial, 4);
