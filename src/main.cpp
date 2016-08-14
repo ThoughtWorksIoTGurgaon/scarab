@@ -1,38 +1,34 @@
-/**
- * \file
- *       ESP8266 MQTT Bridge example
- * \author
- *       Tuan PM <tuanpm@live.com>
- */
 #include "Arduino.h"
 #include <SoftwareSerial.h>
-#include "espduino.h"
-#include <mqtt.h>
 #include <ServiceFactory.h>
+#include <ELClient.h>
+#include <ELClientMqtt.h>
 
 SoftwareSerial softwareSerial(2, 3); // RX, TX
-ESP esp(&softwareSerial, &Serial, 4);
-MQTT mqtt(&esp);
+
+// Initialize a connection to esp-link using the normal hardware serial port both for
+// SLIP and for debug messages.
+ELClient esp(&Serial, &Serial);
+
+// Initialize the MQTT client
+ELClientMqtt mqtt(&esp);
 
 boolean wifiConnected = false;
 
 void wifiCb(void* response)
 {
-  uint32_t status;
-  RESPONSE res(response);
+  // uint32_t status;
+  // RESPONSE res(response);
   Serial.println("Wifi Connected");
-  if(res.getArgc() == 1) {
-    res.popArgs((uint8_t*)&status, 4);
-    if(status == STATION_GOT_IP) {
-      Serial.println("WIFI CONNECTED");
-      mqtt.connect("192.168.43.11", 1883, false);
-      wifiConnected = true;
-      //or mqtt.connect("host", 1883); /*without security ssl*/
-    } else {
-      wifiConnected = false;
-      mqtt.disconnect();
-    }
-  }
+  // if(res.getArgc() == 1) {
+  //   res.popArgs((uint8_t*)&status, 4);
+  //   if(status == STATION_GOT_IP) {
+  //     Serial.println("WIFI CONNECTED");
+  //     wifiConnected = true;
+  //   } else {
+  //     wifiConnected = false;
+  //   }
+  // }
 }
 
 void libPublishCallback(char *topic, char *data){
@@ -68,14 +64,14 @@ void mqttDisconnected(void* response)
 }
 void mqttData(void* response)
 {
-  RESPONSE res(response);
+  ELClientResponse *res = (ELClientResponse *)response;
 
   Serial.print("Received: topic=");
-  String topic = res.popString();
+  String topic = res->popString();
   Serial.println(topic);
 
   Serial.print("data=");
-  String data = res.popString();
+  String data = res->popString();
 
   Service::process(Packet::parseWrite(data.c_str()));
 
@@ -86,36 +82,29 @@ void mqttPublished(void* response)
 
 }
 void setup() {
-  Serial.begin(19200);
-  softwareSerial.begin(19200);
-  esp.enable();
-  delay(500);
-  esp.reset();
-  delay(500);
-  while(!esp.ready());
+  Serial.begin(115200);
+  softwareSerial.begin(115200);
 
-  Serial.println("ARDUINO: setup mqtt client");
-  if(!mqtt.begin("my-device-id", "", "", 120, 1)) {
-    Serial.println("ARDUINO: fail to setup mqtt");
-    while(1);
-  }
+  // Sync-up with esp-link, this is required at the start of any sketch and initializes the
+  // callbacks to the wifi status change callback. The callback gets called with the initial
+  // status right after Sync() below completes.
+  esp.wifiCb.attach(wifiCb); // wifi status change callback, optional (delete if not desired)
+  bool ok;
+  do {
+    ok = esp.Sync();      // sync up with esp-link, blocks for up to 2 seconds
+    if (!ok) Serial.println("EL-Client sync failed!");
+  } while(!ok);
+  Serial.println("EL-Client synced!");
 
-  Serial.println("ARDUINO: setup mqtt lwt");
-  mqtt.lwt("/lwt", "offline", 0, 0); //or mqtt.lwt("/lwt", "offline");
 
-/*setup mqtt events */
-  mqtt.connectedCb.attach(&mqttConnected);
-  mqtt.disconnectedCb.attach(&mqttDisconnected);
-  mqtt.publishedCb.attach(&mqttPublished);
-  mqtt.dataCb.attach(&mqttData);
+  // Set-up callbacks for events and initialize with es-link.
+  mqtt.connectedCb.attach(mqttConnected);
+  mqtt.disconnectedCb.attach(mqttDisconnected);
+  mqtt.publishedCb.attach(mqttPublished);
+  mqtt.dataCb.attach(mqttData);
+  mqtt.setup();
 
-  /*setup wifi*/
-  Serial.println("ARDUINO: setup wifi");
-  esp.wifiCb.attach(&wifiCb);
-
-  esp.wifiConnect("XT1033","12345678");
-
-  Serial.println("ARDUINO: system started");
+  Serial.println("EL-MQTT ready");
 
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
@@ -127,7 +116,7 @@ void setup() {
 int data = 0x01;
 
 void loop() {
-  esp.process();
+  esp.Process();
   if(wifiConnected) {
   }
 }
