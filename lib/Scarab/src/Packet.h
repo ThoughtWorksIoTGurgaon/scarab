@@ -1,7 +1,6 @@
 #ifndef PACKET_H
 #define PACKET_H
 
-
 typedef struct {
   int id;
   int dataLen;

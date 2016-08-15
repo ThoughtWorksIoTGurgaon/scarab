@@ -1,16 +1,8 @@
-#include "Arduino.h"
 #include "Service.h"
 #include "Packet.h"
-#include "ServiceFactory.h"
 
-int digitalWriteCallback(int portNumber, int level){
-  digitalWrite(portNumber, level);
-  return level;
-}
 
-void Service :: process(WritePacket *pkt){
-      Characteristic** allChars = ServiceFactory::serviceCharMap[pkt->serviceId];
-
+void Service :: process(WritePacket *pkt, Characteristic** allChars, int (* digitalWriteCallback)(int, int)){
       int charCount = pkt->charCount;
 
       for (int i = 0; i < charCount; i++) {
@@ -18,11 +10,10 @@ void Service :: process(WritePacket *pkt){
 
         Characteristic *ch = allChars[charStruct.id];
 
-        ch->write(charStruct.dataLen, charStruct.data, &digitalWriteCallback);
+        ch->write(charStruct.dataLen, charStruct.data, digitalWriteCallback);
       }
 }
- ResponsePacket* Service :: process(ReadPacket *pkt){
-   Characteristic** allChars = ServiceFactory::serviceCharMap[pkt->serviceId];
+ ResponsePacket* Service :: process(ReadPacket *pkt, Characteristic** allChars){
    Packet :: responsePacket.serviceId = pkt -> serviceId;
    int charCount = pkt->charCount;
    Packet :: responsePacket.charCount = charCount;

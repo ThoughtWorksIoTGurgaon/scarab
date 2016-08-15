@@ -1,7 +1,6 @@
 #ifndef SERVICE_H
 #define SERVICE_H
 
-#include "Arduino.h"
 #include "Characteristic.h"
 #include "Packet.h"
 
@@ -12,9 +11,8 @@ typedef enum {
 class Service{
   public:
       virtual Characteristic ** construct(int *port)=0;
-      static void process(WritePacket *pkt);
-      static  ResponsePacket * process(ReadPacket *pkt);
+      static void process(WritePacket *pkt, Characteristic** allChars, int (* digitalWriteCallback)(int, int));
+      static  ResponsePacket * process(ReadPacket *pkt, Characteristic** allChars);
 };
-
 
 #endif

@@ -1,4 +1,4 @@
-#include "Characteristic.h"
+#include <Characteristic.h>
 
 class DeviceCharacteristic : public Characteristic{
   public:

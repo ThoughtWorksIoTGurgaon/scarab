@@ -1,44 +1,34 @@
-#include "Arduino.h"
+#include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <ServiceFactory.h>
 #include <ELClient.h>
 #include <ELClientMqtt.h>
+
+#include <Service/Device/DeviceService.h>
+#include <Service/Switch/SwitchService.h>
+
+#define NO_OF_SUPPORTED_SERVICES 2
+#define NO_OF_SERVICES_INSTANTIATED 2
 
 SoftwareSerial softwareSerial(2, 3); // RX, TX
 
 // Initialize a connection to esp-link using the normal hardware serial port both for
 // SLIP and for debug messages.
 ELClient esp(&Serial, &Serial);
-
 // Initialize the MQTT client
 ELClientMqtt mqtt(&esp);
 
-boolean wifiConnected = false;
+DeviceService deviceService(
+  new Service*[NO_OF_SUPPORTED_SERVICES]{0, new SwitchService()},
+  NO_OF_SERVICES_INSTANTIATED
+);
 
-void wifiCb(void* response)
-{
-  // uint32_t status;
-  // RESPONSE res(response);
+void wifiCb(void* response) {
   Serial.println("Wifi Connected");
-  // if(res.getArgc() == 1) {
-  //   res.popArgs((uint8_t*)&status, 4);
-  //   if(status == STATION_GOT_IP) {
-  //     Serial.println("WIFI CONNECTED");
-  //     wifiConnected = true;
-  //   } else {
-  //     wifiConnected = false;
-  //   }
-  // }
-}
-
-void libPublishCallback(char *topic, char *data){
-  mqtt.publish(topic, data);
 }
 
 void mqttConnected(void* response)
 {
   Serial.println("Connected");
-
   mqtt.subscribe("/device/my-device-id/cmd");
 
   char binPkt[] = {
@@ -48,39 +38,28 @@ void mqttConnected(void* response)
   };
 
   ReadPacket* readPacket = Packet::parseRead(binPkt);
-
-  Serial.println("readPacket->serviceId");
-  Serial.println(readPacket->serviceId);
-  Serial.println("readPacket->charCount");
-  Serial.println(readPacket->charCount);
-
-   ResponsePacket *responsePacket = Service::process(readPacket);
-
+  ResponsePacket *responsePacket = deviceService.process(readPacket);
   mqtt.publish("/device/my-device-id/data", Packet :: stringifyResponse(responsePacket));
 }
-void mqttDisconnected(void* response)
-{
+void mqttDisconnected(void* response){}
 
-}
 void mqttData(void* response)
 {
   ELClientResponse *res = (ELClientResponse *)response;
 
-  Serial.print("Received: topic=");
   String topic = res->popString();
-  Serial.println(topic);
-
-  Serial.print("data=");
   String data = res->popString();
 
-  Service::process(Packet::parseWrite(data.c_str()));
-
-  Serial.println(data);
+  deviceService.process(Packet::parseWrite(data.c_str()));
 }
-void mqttPublished(void* response)
-{
 
+void mqttPublished(void* response){}
+
+int digitalWriteCallback(int portNumber, int level){
+  digitalWrite(portNumber, level);
+  return level;
 }
+
 void setup() {
   Serial.begin(115200);
   softwareSerial.begin(115200);
@@ -89,13 +68,12 @@ void setup() {
   // callbacks to the wifi status change callback. The callback gets called with the initial
   // status right after Sync() below completes.
   esp.wifiCb.attach(wifiCb); // wifi status change callback, optional (delete if not desired)
-  bool ok;
-  do {
-    ok = esp.Sync();      // sync up with esp-link, blocks for up to 2 seconds
-    if (!ok) Serial.println("EL-Client sync failed!");
-  } while(!ok);
-  Serial.println("EL-Client synced!");
+  bool ok = false;
+  while(!(ok = esp.Sync())) {// sync up with esp-link, blocks for up to 2 seconds
+    Serial.println("EL-Client sync failed!");
+  }
 
+  Serial.println("EL-Client synced!");
 
   // Set-up callbacks for events and initialize with es-link.
   mqtt.connectedCb.attach(mqttConnected);
@@ -109,14 +87,10 @@ void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
 
-  ServiceFactory::newService(DVC, 0);
-  ServiceFactory::newService(SWH, new int[1]{13});
+  deviceService.attachDigitalWriteCallBack(digitalWriteCallback);
+  deviceService.newService(SWH, new int[1]{13});
 }
-
-int data = 0x01;
 
 void loop() {
   esp.Process();
-  if(wifiConnected) {
-  }
 }
