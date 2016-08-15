@@ -6,7 +6,7 @@ DeviceService :: DeviceService(Service **services, int noServiceInstancePresent)
   serviceInstanceMap = services;
   serviceInstanceMap[0] = this;
 
-  serviceIdProfileMap = new ServiceIdProfileMap[noOfServiceInstancePresent];
+  serviceIdProfileMap = new ServiceIdProfileStruct[noOfServiceInstancePresent];
   serviceCharMap = new Characteristic**[noOfServiceInstancePresent];
 
   newService(DVC, 0);
@@ -45,4 +45,8 @@ ResponsePacket * DeviceService :: supportedServicesResponsePacket(){
 
 void DeviceService :: attachDigitalWriteCallBack(int (* callback)(int, int)){
   digitalWriteCallback = callback;
+}
+
+ServiceIdProfileStruct DeviceService :: getServiceIdProfile(int index){
+  return serviceIdProfileMap[index];
 }
