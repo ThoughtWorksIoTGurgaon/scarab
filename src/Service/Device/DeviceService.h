@@ -1,35 +1,28 @@
 #ifndef DEVICE_SERVICE_H
 #define DEVICE_SERVICE_H
 #include <Service.h>
+#include <Packet.h>
+#define DVC_SERVICE_ID 0
+#define DVC_CHAR_ID 0
 
 typedef struct{
   ServiceProfile serviceProfileId;
   unsigned char serviceId;
 } ServiceIdProfileMap;
+
 class DeviceService : public Service{
+  private:
+    Service **serviceInstanceMap;
+    Characteristic*** serviceCharMap;
+    int (* digitalWriteCallback)(int, int);
+
   public:
-      Service **serviceInstanceMap;
       ServiceIdProfileMap *serviceIdProfileMap;
-      Characteristic*** serviceCharMap;
       const int noOfServiceInstancePresent;
 
-      int (* digitalWriteCallback)(int, int);
-
-      DeviceService(Service **services, int noServiceInstancePresent)
-        : noOfServiceInstancePresent(noServiceInstancePresent + 1) {
-        serviceInstanceMap = services;
-        serviceInstanceMap[0] = this;
-
-        serviceIdProfileMap = new ServiceIdProfileMap[noOfServiceInstancePresent];
-        serviceCharMap = new Characteristic**[noOfServiceInstancePresent];
-
-        newService(DVC, 0);
-      }
-
-      void attachDigitalWriteCallBack(int (* callback)(int, int)){
-        digitalWriteCallback = callback;
-      }
-
+      DeviceService(Service **services, int noServiceInstancePresent);
+      void attachDigitalWriteCallBack(int (* callback)(int, int));
+      ResponsePacket * supportedServicesResponsePacket();
       Characteristic ** construct(int *port);
       unsigned char newService(ServiceProfile serviceProfileId, int *ports);
       void process(WritePacket *pkt);
