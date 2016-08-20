@@ -72,20 +72,20 @@ char* Packet :: stringifyResponse(ResponsePacket *responsePacket){
   binPacket[2] = 0x01; //Unused Header Byte
   binPacket[3] = 0x01; //Unused Header Byte
   binPacket[4] = 0x01; //Unused Header Byte
-  binPacket[5] = responsePacket->serviceId + 1; 
-  binPacket[6] = responsePacket->charCount; 
+  binPacket[5] = responsePacket->serviceId + 1;
+  binPacket[6] = responsePacket->charCount;
 
-  int characteristicsStartIndex = BIN_PACKET_HEADER_BYTE_SIZE - 1;
+  int lastWrittenIndex = BIN_PACKET_HEADER_BYTE_SIZE - 1;
   for (int index = 0; index < responsePacket->charCount; index++) {
-    binPacket[++characteristicsStartIndex] = responsePacket->charsStruct[index].id;
-    binPacket[++characteristicsStartIndex] = responsePacket->charsStruct[index].dataLen;
+    binPacket[++lastWrittenIndex] = responsePacket->charsStruct[index].id;
+    binPacket[++lastWrittenIndex] = responsePacket->charsStruct[index].dataLen;
 
-    for (int characteristicsDataByteIndex = 0; characteristicsDataByteIndex < responsePacket->charsStruct[characteristicsStartIndex].dataLen; characteristicsDataByteIndex++) {
-      binPacket[++characteristicsStartIndex] = responsePacket->charsStruct[characteristicsStartIndex].data[characteristicsDataByteIndex];
+    for (int characteristicsDataByteIndex = 0; characteristicsDataByteIndex < responsePacket->charsStruct[index].dataLen; characteristicsDataByteIndex++) {
+      binPacket[++lastWrittenIndex] = responsePacket->charsStruct[index].data[characteristicsDataByteIndex];
     }
   }
 
-  binPacket[++characteristicsStartIndex] = 0;
+  binPacket[++lastWrittenIndex] = 0;
 
   return binPacket;
 }
