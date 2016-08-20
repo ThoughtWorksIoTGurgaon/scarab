@@ -17,7 +17,7 @@ include_directories(
 
 add_library(
     packet
-    src/packet.cpp
+    src/Packet.cpp
     )
 
 set(GOOGLETEST_ROOT lib/googletest/googletest CACHE STRING "Google Test source root")
@@ -41,7 +41,7 @@ add_library(googletest ${GOOGLETEST_SOURCES})
 add_executable(
     unit_tests
     test/main.cpp
-    test/packet.cpp
+    test/Packet.cpp
     )
 
 add_dependencies(unit_tests googletest)
