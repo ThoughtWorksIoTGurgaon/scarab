@@ -1,6 +1,8 @@
 #ifndef PACKET_H
 #define PACKET_H
 
+#include "common.h"
+
 typedef struct {
   int id;
   int dataLen;
@@ -16,7 +18,7 @@ typedef struct {
 typedef struct {
   int serviceId;
   int charCount;
-  const char *characteristicIds;
+  byte *characteristicIds;
 } ReadPacket;
 
 class Packet {
@@ -29,7 +31,7 @@ class Packet {
     Packet();
     static ResponsePacket responsePacket;
     static WritePacket* parseWrite(const char *) ;
-    static ReadPacket* parseRead(const char *) ;
+    static ReadPacket* parseRead(byte *) ;
     static char* stringifyResponse(ResponsePacket *);
 };
 

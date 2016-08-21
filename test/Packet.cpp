@@ -3,7 +3,7 @@
 
 TEST(packet, shouldReadPacketForOneServiceAndZeroCharacteristic)
 {
-  char binPkt[] = {
+  byte binPkt[] = {
     0x01, 0x03, 0x01, 0x01, 0x01, //header
     0x01,  //serviceId
     0x00  //charCount
@@ -16,7 +16,7 @@ TEST(packet, shouldReadPacketForOneServiceAndZeroCharacteristic)
 
 TEST(packet, shouldReadPacketForOneServiceAndOneCharacteristic)
 {
-  char binPkt[] = {
+  byte binPkt[] = {
     0x01, 0x03, 0x01, 0x01, 0x01, //header
     0x01,  //serviceId
     0x01, 0x01 //charCount, charIds
@@ -26,7 +26,7 @@ TEST(packet, shouldReadPacketForOneServiceAndOneCharacteristic)
   ASSERT_EQ(readPacket->serviceId, 0);
   ASSERT_EQ(readPacket->charCount, 1);
 
-  char characteristicIds[] = {0x01};
+  byte characteristicIds[] = {0x01};
 
   for (size_t i = 0; i < readPacket->charCount; ++i) {
     ASSERT_EQ(readPacket->characteristicIds[i], characteristicIds[i]);
@@ -35,7 +35,7 @@ TEST(packet, shouldReadPacketForOneServiceAndOneCharacteristic)
 
 TEST(packet, shouldReadPacketForOneServiceAndTwoCharacteristic)
 {
-  char binPkt[] = {
+  byte binPkt[] = {
     0x01, 0x03, 0x01, 0x01, 0x01, //header
     0x04,  //serviceId
     0x02, 0x02, 0x01 //charCount, charIds...
@@ -45,7 +45,7 @@ TEST(packet, shouldReadPacketForOneServiceAndTwoCharacteristic)
   ASSERT_EQ(readPacket->serviceId, 3);
   ASSERT_EQ(readPacket->charCount, 2);
 
-  char characteristicIds[] = {0x02, 0x01};
+  byte characteristicIds[] = {0x02, 0x01};
 
   for (size_t i = 0; i < readPacket->charCount; ++i) {
     ASSERT_EQ(readPacket->characteristicIds[i], characteristicIds[i]);
@@ -54,7 +54,7 @@ TEST(packet, shouldReadPacketForOneServiceAndTwoCharacteristic)
 
 TEST(packet, shouldReadPacketAndReturnWithoutConsumingAnyMemory)
 {
-  char binPkt1[] = {
+  byte binPkt1[] = {
     0x01, 0x03, 0x01, 0x01, 0x01, //header
     0x01,  //serviceId
     0x00  //charCount
@@ -62,7 +62,7 @@ TEST(packet, shouldReadPacketAndReturnWithoutConsumingAnyMemory)
 
   ReadPacket* readPacket1 = Packet :: parseRead(binPkt1);
 
-  char binPkt2[] = {
+  byte binPkt2[] = {
     0x01, 0x03, 0x01, 0x01, 0x01, //header
     0x04,  //serviceId
     0x02, 0x02, 0x01 //charCount, charIds...

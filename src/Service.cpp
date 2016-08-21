@@ -17,7 +17,7 @@ void Service :: process(WritePacket *pkt, Characteristic** allChars, int (* digi
    Packet :: responsePacket.serviceId = pkt -> serviceId;
    int charCount = pkt->charCount;
    Packet :: responsePacket.charCount = charCount;
-   const char *charIds = pkt->characteristicIds;
+   byte *charIds = pkt->characteristicIds;
    Packet :: responsePacket.charsStruct = new CharStruct[charCount];
    for (int i = 0; i < charCount; i++) {
      Characteristic *ch = allChars[charIds[i]-1];

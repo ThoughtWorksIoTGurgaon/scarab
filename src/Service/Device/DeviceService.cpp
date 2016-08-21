@@ -39,7 +39,7 @@ ResponsePacket* DeviceService :: process(ReadPacket *pkt){
 }
 
 ResponsePacket * DeviceService :: supportedServicesResponsePacket(){
-  char binPkt[] = {
+  byte binPkt[] = {
     0x01, 0x03, 0x01, 0x01, 0x01,
     0x01,  //serviceId
     0x01, 0x01 //charCount, charIds

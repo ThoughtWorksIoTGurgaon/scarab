@@ -51,7 +51,7 @@ WritePacket* Packet :: parseWrite(const char *binPacket) {
    return &writePacket;
  }
 
-ReadPacket* Packet :: parseRead(const char *binPacket){
+ReadPacket* Packet :: parseRead(byte *binPacket){
   readPacket.serviceId = binPacket[SERVICE_ID_INDEX]-1;
   readPacket.charCount = binPacket[CHARACTERISTICS_COUNT_INDEX];
   readPacket.characteristicIds = &binPacket[CHARACTERISTICS_BUFFER_START_INDEX];
