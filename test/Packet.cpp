@@ -73,3 +73,22 @@ TEST(packet, shouldReadPacketAndReturnWithoutConsumingAnyMemory)
   //both readPackets are pointing to same memory address
   ASSERT_EQ(readPacket1, readPacket2);
 }
+
+TEST(packet, shouldStringifyResponseHavingZeroCharsData)
+{
+  ResponsePacket *pkt = &Packet::responsePacket;
+
+  pkt->serviceId = 0;
+  pkt->charCount = 0;
+
+  char *responseString = Packet :: stringifyResponse(pkt);
+  char expectedResponseString[] = {
+    0x01, //Version
+    0x04, //ResponsePacketType
+    0x01, 0x01, 0x01, //Unused
+    0x01,  //serviceId
+    0x00 //charsCount
+  };
+
+  ASSERT_STREQ(responseString, expectedResponseString);
+}
