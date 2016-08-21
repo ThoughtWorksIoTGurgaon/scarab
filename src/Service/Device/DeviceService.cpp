@@ -13,16 +13,20 @@ DeviceService :: DeviceService(Service **services, int noServiceInstancePresent)
 }
 
 Characteristic** DeviceService :: construct(int *port){
-  return new Characteristic*[1]{
-      new DeviceCharacteristic()
-  };
+  Characteristic** chars = new Characteristic*[1];
+  chars[0] = new DeviceCharacteristic();
+  return chars;
 }
 
 unsigned char DeviceService :: newService(ServiceProfile serviceProfileId, int *ports){
     static unsigned char serviceId = 0;
+
     Service *service = serviceInstanceMap[serviceProfileId];
     serviceCharMap[serviceId] = service->construct(ports);
-    serviceIdProfileMap[serviceId]={serviceProfileId, serviceId};
+
+    serviceIdProfileMap[serviceId].serviceId = serviceId;
+    serviceIdProfileMap[serviceId].serviceProfileId = serviceProfileId;
+
     return serviceId++;
 }
 

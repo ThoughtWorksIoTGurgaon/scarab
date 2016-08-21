@@ -16,9 +16,15 @@ include_directories(
     )
 
 add_library(
-    packet
-    src/Packet.cpp
-    )
+  scarab-core
+  src/Packet.cpp
+  src/Service.cpp
+  src/Characteristic.cpp
+  src/Service/Device/DeviceService.cpp
+  src/Service/Device/DeviceCharacteristic.cpp
+  src/Service/Switch/SwitchService.cpp
+  src/Service/Switch/SwitchCharacteristic.cpp
+  )
 
 set(GOOGLETEST_ROOT lib/googletest/googletest CACHE STRING "Google Test source root")
 
@@ -38,18 +44,16 @@ endforeach()
 
 add_library(googletest ${GOOGLETEST_SOURCES})
 
-add_executable(
-    unit_tests
-    test/main.cpp
-    test/Packet.cpp
-    )
+FILE(GLOB TESTS_SOURCES test/*.cpp)
+
+add_executable(unit_tests ${TESTS_SOURCES})
 
 add_dependencies(unit_tests googletest)
 
 target_link_libraries(
     unit_tests
     googletest
-    packet
+    scarab-core
     pthread
     )
 

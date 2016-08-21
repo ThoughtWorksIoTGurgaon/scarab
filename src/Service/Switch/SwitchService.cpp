@@ -2,7 +2,7 @@
 #include "SwitchCharacteristic.h"
 
 Characteristic** SwitchService::construct(int *port){
-    return new Characteristic*[1]{
-        new SwitchCharacteristic(port[0])
-    };
+  Characteristic ** chars = new Characteristic*[1];
+  chars[0] = new SwitchCharacteristic(port[0]);
+  return chars;
 }
