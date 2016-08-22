@@ -9,22 +9,13 @@ typedef struct {
   byte * data;
 } CharStruct;
 
-typedef struct {
-    int serviceId;
-    int charCount;
-    CharStruct *charsStruct;
-} ResponsePacket;
+const int SIZE_OF_CHAR_STRUCT = sizeof(CharStruct);
 
 class Packet {
-  private:
-  protected:
   public:
-    static ResponsePacket responsePacket;
     byte serviceId;
     byte charCount;
-    Packet* consumeHeader(byte *);
-    static char* stringifyResponse(ResponsePacket *);
-    static const int SIZE_OF_CHAR_STRUCT = sizeof(CharStruct);
+    void consumeHeader(byte *);
 };
 
 #endif

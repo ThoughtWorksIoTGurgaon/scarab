@@ -5,7 +5,7 @@
 
 class WritePacket : public Packet {
   private :
-    static WritePacket self;
+    static WritePacket *self;
     WritePacket(){}
   public :
     CharStruct *charsStruct;

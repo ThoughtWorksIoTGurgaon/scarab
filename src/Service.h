@@ -4,6 +4,7 @@
 #include "Characteristic.h"
 #include "Packet/ReadPacket.h"
 #include "Packet/WritePacket.h"
+#include "Packet/ResponsePacket.h"
 
 typedef enum {
   DVC, SWH
