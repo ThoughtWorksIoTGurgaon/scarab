@@ -2,6 +2,9 @@
 #include "DeviceCharacteristic.h"
 #include <Packet/ReadPacket.h>
 
+#define DEVICE_SERVICE_ID 0
+#define DEVICE_DISCOVERY_CHAR_ID 0
+
 DeviceService :: DeviceService(Service **services, int noServiceInstancePresent)
   : noOfServiceInstancePresent(noServiceInstancePresent + 1) {
   serviceInstanceMap = services;
@@ -10,12 +13,12 @@ DeviceService :: DeviceService(Service **services, int noServiceInstancePresent)
   serviceIdProfileMap = new ServiceIdProfileStruct[noOfServiceInstancePresent];
   serviceCharMap = new Characteristic**[noOfServiceInstancePresent];
 
-  newService(DVC, 0);
+  newService(DVC, DEVICE_SERVICE_ID);
 }
 
 Characteristic** DeviceService :: construct(int *port){
   Characteristic** chars = new Characteristic*[1];
-  chars[0] = new DeviceCharacteristic();
+  chars[DEVICE_DISCOVERY_CHAR_ID] = new DeviceCharacteristic();
   return chars;
 }
 
@@ -40,12 +43,13 @@ ResponsePacket* DeviceService :: consume(ReadPacket *pkt){
 }
 
 ResponsePacket * DeviceService :: supportedServicesResponsePacket(){
-  byte binPkt[] = {
-    0x01, 0x03, 0x01, 0x01, 0x01,
-    0x01,  //serviceId
-    0x01, 0x01 //charCount, charIds
-  };
-  return consume(ReadPacket::parse(binPkt));
+  byte charCount = 1;
+  byte *charIds = new byte[charCount];
+  charIds[0] = DEVICE_DISCOVERY_CHAR_ID;
+
+  return consume(ReadPacket::construct(
+    DEVICE_SERVICE_ID, charCount, charIds //serviceId, charCount, charIds
+  ));
 }
 
 void DeviceService :: attachDigitalWriteCallBack(int (* callback)(int, int)){

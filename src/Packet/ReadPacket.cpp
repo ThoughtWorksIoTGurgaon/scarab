@@ -7,6 +7,14 @@ static const int BIN_PACKET_HEADER_BYTE_SIZE = 7;
 
 ReadPacket* ReadPacket::self = new ReadPacket;
 
+ReadPacket* ReadPacket :: construct(byte serviceId, byte charCount, byte *charsIds) {
+  self->serviceId = serviceId;
+  self->charCount = charCount;
+  self->construct(charsIds);
+
+  return self;
+}
+
 void ReadPacket :: construct(byte *charsIds) {
   characteristicIds = charsIds;
 }

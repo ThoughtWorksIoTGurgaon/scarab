@@ -9,6 +9,7 @@ class ReadPacket : public Packet {
   public :
     byte *characteristicIds;
     void construct(byte *charsIds);
+    static ReadPacket* construct(byte serviceId, byte charCount, byte *charsIds);
     static ReadPacket* parse(byte* pkt);
     void destroy();
 };
