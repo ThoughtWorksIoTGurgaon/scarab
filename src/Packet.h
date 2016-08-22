@@ -6,7 +6,7 @@
 typedef struct {
   int id;
   int dataLen;
-  char * data;
+  byte * data;
 } CharStruct;
 
 typedef struct {
@@ -30,7 +30,7 @@ class Packet {
   public:
     Packet();
     static ResponsePacket responsePacket;
-    static WritePacket* parseWrite(const char *) ;
+    static WritePacket* parseWrite(byte *) ;
     static ReadPacket* parseRead(byte *) ;
     static char* stringifyResponse(ResponsePacket *);
 };

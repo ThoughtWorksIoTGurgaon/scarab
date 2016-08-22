@@ -87,7 +87,8 @@ TEST(packet, shouldStringifyResponseHavingZeroCharsData)
     0x04, //ResponsePacketType
     0x01, 0x01, 0x01, //Unused
     0x01,  //serviceId
-    0x00 //charsCount
+    0x00, //charsCount
+    0x00 //Ending string
   };
 
   ASSERT_STREQ(responseString, expectedResponseString);
@@ -102,7 +103,7 @@ TEST(packet, shouldStringifyResponseHavingOneCharsData)
   pkt->charsStruct = new CharStruct[1];
   pkt->charsStruct[0].id = 1;
   pkt->charsStruct[0].dataLen = 1;
-  pkt->charsStruct[0].data = new char[1];
+  pkt->charsStruct[0].data = new byte[1];
   pkt->charsStruct[0].data[0] = 0x01;
 
   char *responseString = Packet :: stringifyResponse(pkt);

@@ -5,8 +5,8 @@
 class SwitchCharacteristic : public Characteristic{
   public :
     SwitchCharacteristic(int portNumber);
-    void write(int, char *, int (* digitalWriteCallback)(int, int)) ;
-    char* read(){ return "__________NOT IMPLEMENTED________";}
+    void write(int, byte *, int (* digitalWriteCallback)(int, int)) ;
+    byte* read(){ return 0;}
 };
 
 #endif

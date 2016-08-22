@@ -33,7 +33,7 @@ WritePacket Packet :: writePacket;
 ReadPacket Packet :: readPacket;
 ResponsePacket Packet :: responsePacket;
 
-WritePacket* Packet :: parseWrite(const char *binPacket) {
+WritePacket* Packet :: parseWrite(byte *binPacket) {
   writePacket.serviceId = binPacket[SERVICE_ID_INDEX]-1;
   writePacket.charCount = binPacket[CHARACTERISTICS_COUNT_INDEX];
   writePacket.charsStruct = new CharStruct[writePacket.charCount];
@@ -41,7 +41,7 @@ WritePacket* Packet :: parseWrite(const char *binPacket) {
   for (int characteristicsIndex = 0; characteristicsIndex < writePacket.charCount; characteristicsIndex++) {
       writePacket.charsStruct[characteristicsIndex].id = binPacket[CHARACTERISTICS_BUFFER_START_INDEX + characteristicsIndex*SIZE_OF_CHAR_STRUCT + 0]-1;
       writePacket.charsStruct[characteristicsIndex].dataLen = binPacket[CHARACTERISTICS_BUFFER_START_INDEX + characteristicsIndex*SIZE_OF_CHAR_STRUCT + 1];
-      writePacket.charsStruct[characteristicsIndex].data = new char[writePacket.charsStruct[characteristicsIndex].dataLen];
+      writePacket.charsStruct[characteristicsIndex].data = new byte[writePacket.charsStruct[characteristicsIndex].dataLen];
 
       for (int characteristicDataIndex = 0; characteristicDataIndex < writePacket.charsStruct[characteristicsIndex].dataLen; characteristicDataIndex++) {
         writePacket.charsStruct[characteristicsIndex].data[characteristicDataIndex] = binPacket[CHARACTERISTICS_BUFFER_START_INDEX + characteristicsIndex*SIZE_OF_CHAR_STRUCT + 1 + 1 + characteristicDataIndex];
