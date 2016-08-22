@@ -21,7 +21,6 @@ __________________________________________________________________
 
 */
 
-#include <string.h>
 #include "Packet.h"
 
 static const int SERVICE_ID_INDEX = 5;
@@ -29,36 +28,7 @@ static const int CHARACTERISTICS_COUNT_INDEX = 6;
 static const int CHARACTERISTICS_BUFFER_START_INDEX = 7;
 static const int BIN_PACKET_HEADER_BYTE_SIZE = 7;
 
-WritePacket Packet :: writePacket;
-ReadPacket Packet :: readPacket;
 ResponsePacket Packet :: responsePacket;
-
-WritePacket* Packet :: parseWrite(byte *binPacket) {
-  writePacket.serviceId = binPacket[SERVICE_ID_INDEX]-1;
-  writePacket.charCount = binPacket[CHARACTERISTICS_COUNT_INDEX];
-  writePacket.charsStruct = new CharStruct[writePacket.charCount];
-
-  for (int characteristicsIndex = 0; characteristicsIndex < writePacket.charCount; characteristicsIndex++) {
-      writePacket.charsStruct[characteristicsIndex].id = binPacket[CHARACTERISTICS_BUFFER_START_INDEX + characteristicsIndex*SIZE_OF_CHAR_STRUCT + 0]-1;
-      writePacket.charsStruct[characteristicsIndex].dataLen = binPacket[CHARACTERISTICS_BUFFER_START_INDEX + characteristicsIndex*SIZE_OF_CHAR_STRUCT + 1];
-      writePacket.charsStruct[characteristicsIndex].data = new byte[writePacket.charsStruct[characteristicsIndex].dataLen];
-
-      for (int characteristicDataIndex = 0; characteristicDataIndex < writePacket.charsStruct[characteristicsIndex].dataLen; characteristicDataIndex++) {
-        writePacket.charsStruct[characteristicsIndex].data[characteristicDataIndex] = binPacket[CHARACTERISTICS_BUFFER_START_INDEX + characteristicsIndex*SIZE_OF_CHAR_STRUCT + 1 + 1 + characteristicDataIndex];
-      }
-   }
-
-   return &writePacket;
- }
-
-ReadPacket* Packet :: parseRead(byte *binPacket){
-  readPacket.serviceId = binPacket[SERVICE_ID_INDEX]-1;
-  readPacket.charCount = binPacket[CHARACTERISTICS_COUNT_INDEX];
-  readPacket.characteristicIds = &binPacket[CHARACTERISTICS_BUFFER_START_INDEX];
-
-  return &readPacket;
-}
-
 
 char* Packet :: stringifyResponse(ResponsePacket *responsePacket){
   int allCharDataLen = 0;
@@ -88,4 +58,9 @@ char* Packet :: stringifyResponse(ResponsePacket *responsePacket){
   binPacket[++lastWrittenIndex] = 0;
 
   return binPacket;
+}
+
+Packet* Packet :: consumeHeader(byte* binPacket) {
+  this->serviceId = binPacket[SERVICE_ID_INDEX]-1;
+  this->charCount = binPacket[CHARACTERISTICS_COUNT_INDEX];
 }

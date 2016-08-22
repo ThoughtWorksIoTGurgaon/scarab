@@ -13,26 +13,18 @@ typedef struct {
     int serviceId;
     int charCount;
     CharStruct *charsStruct;
-} WritePacket, ResponsePacket;
-
-typedef struct {
-  int serviceId;
-  int charCount;
-  byte *characteristicIds;
-} ReadPacket;
+} ResponsePacket;
 
 class Packet {
   private:
-    static WritePacket writePacket;
-    static ReadPacket readPacket;
-    static const int SIZE_OF_CHAR_STRUCT = sizeof(CharStruct);
-
+  protected:
   public:
-    Packet();
     static ResponsePacket responsePacket;
-    static WritePacket* parseWrite(byte *) ;
-    static ReadPacket* parseRead(byte *) ;
+    byte serviceId;
+    byte charCount;
+    Packet* consumeHeader(byte *);
     static char* stringifyResponse(ResponsePacket *);
+    static const int SIZE_OF_CHAR_STRUCT = sizeof(CharStruct);
 };
 
 #endif

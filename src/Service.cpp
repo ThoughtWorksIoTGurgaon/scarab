@@ -3,9 +3,9 @@
 
 
 void Service :: process(WritePacket *pkt, Characteristic** allChars, int (* digitalWriteCallback)(int, int)){
-      int charCount = pkt->charCount;
+      byte charCount = pkt->charCount;
 
-      for (int i = 0; i < charCount; i++) {
+      for (byte i = 0; i < charCount; i++) {
         CharStruct charStruct = pkt->charsStruct[i];
 
         Characteristic *ch = allChars[charStruct.id];

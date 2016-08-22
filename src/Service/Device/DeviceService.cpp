@@ -1,5 +1,6 @@
 #include "DeviceService.h"
 #include "DeviceCharacteristic.h"
+#include <Packet/ReadPacket.h>
 
 DeviceService :: DeviceService(Service **services, int noServiceInstancePresent)
   : noOfServiceInstancePresent(noServiceInstancePresent + 1) {
@@ -44,7 +45,7 @@ ResponsePacket * DeviceService :: supportedServicesResponsePacket(){
     0x01,  //serviceId
     0x01, 0x01 //charCount, charIds
   };
-  return process(Packet::parseRead(binPkt));
+  return process(ReadPacket::parse(binPkt));
 }
 
 void DeviceService :: attachDigitalWriteCallBack(int (* callback)(int, int)){

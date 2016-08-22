@@ -15,15 +15,11 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src
     )
 
+FILE(GLOB SCARAB_SOURCES src/*.cpp src/**/*.cpp src/**/**/*.cpp)
+
 add_library(
   scarab-core
-  src/Packet.cpp
-  src/Service.cpp
-  src/Characteristic.cpp
-  src/Service/Device/DeviceService.cpp
-  src/Service/Device/DeviceCharacteristic.cpp
-  src/Service/Switch/SwitchService.cpp
-  src/Service/Switch/SwitchCharacteristic.cpp
+  ${SCARAB_SOURCES}
   )
 
 set(GOOGLETEST_ROOT lib/googletest/googletest CACHE STRING "Google Test source root")
@@ -44,7 +40,7 @@ endforeach()
 
 add_library(googletest ${GOOGLETEST_SOURCES})
 
-FILE(GLOB TESTS_SOURCES test/*.cpp)
+FILE(GLOB TESTS_SOURCES test/*.cpp test/**/*.cpp)
 
 add_executable(unit_tests ${TESTS_SOURCES})
 

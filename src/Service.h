@@ -2,7 +2,8 @@
 #define SERVICE_H
 
 #include "Characteristic.h"
-#include "Packet.h"
+#include "Packet/ReadPacket.h"
+#include "Packet/WritePacket.h"
 
 typedef enum {
   DVC, SWH
