@@ -41,3 +41,7 @@ byte* ResponsePacket :: toBytes(){
 
   return binPacket;
 }
+
+void ResponsePacket :: destroy() {
+  delete this->charsStruct;
+}

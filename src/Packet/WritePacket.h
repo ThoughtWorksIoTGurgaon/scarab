@@ -11,6 +11,7 @@ class WritePacket : public Packet {
     CharStruct *charsStruct;
     void construct(CharStruct *);
     static WritePacket* parse(byte*);
+    void destroy();
 };
 
 #endif

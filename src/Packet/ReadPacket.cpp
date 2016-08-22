@@ -20,3 +20,7 @@ ReadPacket* ReadPacket :: parse(byte *binPacket){
 
   return self;
 }
+
+void ReadPacket :: destroy() {
+  delete this->characteristicIds;
+}

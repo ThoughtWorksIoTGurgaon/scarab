@@ -11,6 +11,7 @@ class ResponsePacket : public Packet {
     CharStruct *charsStruct;
     static ResponsePacket* construct(byte, byte, CharStruct *);
     byte * toBytes();
+    void destroy();
 };
 
 #endif

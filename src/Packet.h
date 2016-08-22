@@ -16,6 +16,7 @@ class Packet {
     byte serviceId;
     byte charCount;
     void consumeHeader(byte *);
+    virtual void destroy() = 0;
 };
 
 #endif

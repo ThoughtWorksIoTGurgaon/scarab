@@ -28,8 +28,8 @@ class DeviceService : public Service{
       Characteristic ** construct(int *port);
       unsigned char newService(ServiceProfile serviceProfileId, int *ports);
 
-      void process(WritePacket *pkt);
-      ResponsePacket* process(ReadPacket *pkt);
+      void consume(WritePacket *pkt);
+      ResponsePacket* consume(ReadPacket *pkt);
 };
 
 extern DeviceService deviceService;

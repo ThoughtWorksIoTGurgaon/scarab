@@ -30,3 +30,7 @@ WritePacket* WritePacket :: parse(byte *binPacket){
 
   return self;
 }
+
+void WritePacket :: destroy() {
+  delete this->charsStruct;
+}

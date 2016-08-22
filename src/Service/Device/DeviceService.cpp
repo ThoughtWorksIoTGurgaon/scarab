@@ -31,12 +31,12 @@ unsigned char DeviceService :: newService(ServiceProfile serviceProfileId, int *
     return serviceId++;
 }
 
-void DeviceService :: process(WritePacket *pkt){
-  Service :: process(pkt, serviceCharMap[pkt->serviceId], digitalWriteCallback);
+void DeviceService :: consume(WritePacket *pkt){
+  Service :: consume(pkt, serviceCharMap[pkt->serviceId], digitalWriteCallback);
 }
 
-ResponsePacket* DeviceService :: process(ReadPacket *pkt){
-  return Service :: process(pkt, serviceCharMap[pkt->serviceId]);
+ResponsePacket* DeviceService :: consume(ReadPacket *pkt){
+  return Service :: consume(pkt, serviceCharMap[pkt->serviceId]);
 }
 
 ResponsePacket * DeviceService :: supportedServicesResponsePacket(){
@@ -45,7 +45,7 @@ ResponsePacket * DeviceService :: supportedServicesResponsePacket(){
     0x01,  //serviceId
     0x01, 0x01 //charCount, charIds
   };
-  return process(ReadPacket::parse(binPkt));
+  return consume(ReadPacket::parse(binPkt));
 }
 
 void DeviceService :: attachDigitalWriteCallBack(int (* callback)(int, int)){

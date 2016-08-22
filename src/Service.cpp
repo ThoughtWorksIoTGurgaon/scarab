@@ -1,18 +1,20 @@
 #include "Service.h"
 
-void Service :: process(WritePacket *pkt, Characteristic** allChars, int (* digitalWriteCallback)(int, int)){
-      byte charCount = pkt->charCount;
+void Service :: consume(WritePacket *pkt, Characteristic** allChars, int (* digitalWriteCallback)(int, int)){
+  byte charCount = pkt->charCount;
 
-      for (byte i = 0; i < charCount; i++) {
-        CharStruct charStruct = pkt->charsStruct[i];
+  for (byte i = 0; i < charCount; i++) {
+    CharStruct charStruct = pkt->charsStruct[i];
 
-        Characteristic *ch = allChars[charStruct.id];
+    Characteristic *ch = allChars[charStruct.id];
 
-        ch->write(charStruct.dataLen, charStruct.data, digitalWriteCallback);
-      }
+    ch->write(charStruct.dataLen, charStruct.data, digitalWriteCallback);
+  }
+
+  pkt->destroy();
 }
 
-ResponsePacket* Service :: process(ReadPacket *pkt, Characteristic** allChars){
+ResponsePacket* Service :: consume(ReadPacket *pkt, Characteristic** allChars){
    byte serviceId = pkt -> serviceId;
    byte charCount = pkt->charCount;
 
@@ -25,6 +27,8 @@ ResponsePacket* Service :: process(ReadPacket *pkt, Characteristic** allChars){
      CharStruct charStruct = {charIds[i], data[0], data+1};
      charsStruct[i] = charStruct;
    }
+
+   pkt->destroy();
 
    return ResponsePacket::construct(
        serviceId,

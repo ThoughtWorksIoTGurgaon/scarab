@@ -13,8 +13,8 @@ typedef enum {
 class Service{
   public:
       virtual Characteristic ** construct(int *port)=0;
-      static void process(WritePacket *pkt, Characteristic** allChars, int (* digitalWriteCallback)(int, int));
-      static  ResponsePacket * process(ReadPacket *pkt, Characteristic** allChars);
+      static void consume(WritePacket *pkt, Characteristic** allChars, int (* digitalWriteCallback)(int, int));
+      static  ResponsePacket * consume(ReadPacket *pkt, Characteristic** allChars);
 };
 
 #endif

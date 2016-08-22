@@ -10,5 +10,6 @@ class ReadPacket : public Packet {
     byte *characteristicIds;
     void construct(byte *charsIds);
     static ReadPacket* parse(byte* pkt);
+    void destroy();
 };
 #endif
