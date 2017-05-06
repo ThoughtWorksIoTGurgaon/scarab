@@ -28,7 +28,7 @@ ResponsePacket* Service :: consume(ReadPacket *pkt, Characteristic** allChars){
 
    for (int i = 0; i < charCount; i++) {
     //  std::cerr << "Loop: " << i << '\n';
-     Characteristic *ch = allChars[charIds[i] - 1];
+     Characteristic *ch = allChars[charIds[i]];
     //  std::cerr<< "Before read";
      byte *data = ch->read();
      CharStruct charStruct = {charIds[i], data[0], data+1};

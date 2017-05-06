@@ -1,25 +1,25 @@
 #include "DeviceService.h"
 #include "DeviceCharacteristic.h"
 #include <Packet/ReadPacket.h>
-// #include <stdio.h>
-// #include <iostream>
-// #include <iomanip>
-// using namespace std;
+#include <stdio.h>
+#include <iostream>
+#include <iomanip>
+using namespace std;
 
 #define DEVICE_SERVICE_ID 0
 #define DEVICE_DISCOVERY_CHAR_ID 0
 
 DeviceService :: DeviceService(Service **services, int noServiceInstancePresent)
-  : noOfServiceInstancePresent(noServiceInstancePresent + 1) {
+  : noOfServiceInstancePresent(noServiceInstancePresent) {
   serviceInstanceMap = services;
   serviceInstanceMap[0] = this;
 
   serviceIdProfileMap = new ServiceIdProfileStruct[noOfServiceInstancePresent];
   serviceCharMap = new Characteristic**[noOfServiceInstancePresent];
 
-  // printf("Building device service");
-  // printf("No of services present: %d", this->noOfServiceInstancePresent);
-  // printf("Now Constructing device discovery service");
+  printf("Building device service");
+  printf("No of services present: %d", this->noOfServiceInstancePresent);
+  printf("Now Constructing device discovery service");
   newService(DVC, DEVICE_SERVICE_ID);
 }
 
@@ -50,15 +50,15 @@ ResponsePacket* DeviceService :: consume(ReadPacket *pkt){
 }
 
 ResponsePacket * DeviceService :: supportedServicesResponsePacket(){
-  // cerr<<"Building supportedServicesResponsePacket";
+  cerr<<"Building supportedServicesResponsePacket";
   byte charCount = 1;
   byte *charIds = new byte[charCount];
   charIds[0] = DEVICE_DISCOVERY_CHAR_ID;
 
-  // cerr<<"Char count from outside is" << std::hex << std::setw(2)<< std::setfill('0') << static_cast<unsigned int>(charCount) <<endl;
+  cerr<<"Char count from outside is" << std::hex << std::setw(2)<< std::setfill('0') << static_cast<unsigned int>(charCount) <<endl;
   //0, 1, 0
   return consume(ReadPacket::construct(
-    DEVICE_SERVICE_ID, charCount, charIds //serviceId, charCount, charIds
+    DEVICE_SERVICE_ID , charCount, charIds //serviceId, charCount, charIds
   ));
 }
 
