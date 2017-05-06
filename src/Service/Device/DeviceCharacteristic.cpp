@@ -1,10 +1,13 @@
 #include "DeviceCharacteristic.h"
 #include "DeviceService.h"
+// #include <iostream>
+// using namespace std;
 void DeviceCharacteristic :: write(int, byte *, int (* digitalWriteCallback)(int, int)){
 
 }
 
 byte* DeviceCharacteristic::read(){
+  // std::cerr << "Reading device characteristic" << '\n';
   int structLen = sizeof(ServiceIdProfileStruct);
   char count = deviceService.noOfServiceInstancePresent;
   int dataLen = structLen * count;

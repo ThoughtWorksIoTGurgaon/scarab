@@ -1,5 +1,5 @@
 #include "ResponsePacket.h"
-#include <stdio.h>
+// #include <stdio.h>
 
 static const int BIN_PACKET_HEADER_BYTE_SIZE = 7;
 static const int VERSION_HEADER_BYTE = 0;
@@ -26,7 +26,7 @@ byte* ResponsePacket :: toBytes(){
   for (int i = 0; i < this->charCount; i++) {
     allCharDataLen += this->charsStruct[i].dataLen;
   }
-  printf("All charDatalen: %d", allCharDataLen);
+  // printf("All charDatalen: %d", allCharDataLen);
 
   int approxSizeOfBinPacket = BIN_PACKET_HEADER_BYTE_SIZE + this->charCount*2 + allCharDataLen + 1;
 
@@ -40,8 +40,8 @@ byte* ResponsePacket :: toBytes(){
   binPacket[NO_OF_SERVICES_BYTE] = this->serviceId + 1;
   binPacket[NO_OF_CHARACTERSTICS] = this->charCount;
 
-  printf("NO OF SERVICES SUPPORTED BY THIS DEVICE: %d", this->serviceId + 1);
-  printf("NO OF CHARACTERISTICS ON THIS DEVICE: %d", this->charCount);
+  // printf("NO OF SERVICES SUPPORTED BY THIS DEVICE: %d", this->serviceId + 1);
+  // printf("NO OF CHARACTERISTICS ON THIS DEVICE: %d", this->charCount);
 
   int lastWrittenIndex = BIN_PACKET_HEADER_BYTE_SIZE - 1;
   for (int characteristicPacketIndex = 0; characteristicPacketIndex < this->charCount; characteristicPacketIndex++) {

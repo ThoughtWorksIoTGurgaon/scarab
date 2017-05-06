@@ -1,4 +1,6 @@
 #include "ReadPacket.h"
+// #include <iostream>
+// using namespace std;
 
 static const int SERVICE_ID_INDEX = 5;
 static const int CHARACTERISTICS_COUNT_INDEX = 6;
@@ -8,6 +10,7 @@ static const int BIN_PACKET_HEADER_BYTE_SIZE = 7;
 ReadPacket* ReadPacket::self = new ReadPacket;
 
 ReadPacket* ReadPacket :: construct(byte serviceId, byte charCount, byte *charsIds) {
+  // cerr<<"Char count in read packet" << charCount;
   self->serviceId = serviceId;
   self->charCount = charCount;
   self->construct(charsIds);
